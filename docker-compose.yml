@@ -1,0 +1,12 @@
+version: "2"
+services: 
+  webservice:
+    build: .
+    volumes: 
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_APP=server.py
+      - FLASK_DEBUG=1
+    command: "flask run -h 0.0.0.0 -p 8000"
