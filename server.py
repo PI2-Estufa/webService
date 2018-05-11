@@ -11,7 +11,7 @@ temperatures = []
 def callback(body, msg):
     global temperatures
     temperatures.append(body)
-#    msg.ack()
+    msg.ack()
 
 
 @app.route("/")
