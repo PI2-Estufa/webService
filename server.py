@@ -1,8 +1,10 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 from kombu import Connection, Queue, Exchange, Consumer
 
 
 app = Flask(__name__)
+CORS(app)
 
 temperatures = []
 
