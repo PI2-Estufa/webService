@@ -20,6 +20,7 @@ class Temperature(Base):
     created_date = Column(DateTime, default=datetime.datetime.utcnow) 
     unit = Column(Unicode(2), nullable=False)
 
+
 class Humidity(Base):
     
     __tablename__ = 'humidity'
@@ -28,6 +29,16 @@ class Humidity(Base):
             Sequence('humidity_id_seq'), primary_key=True)
     value = Column(Float)
     created_date = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class Ph(Base):
+
+    __tablename__ = 'ph'
+
+    id = Column(Integer, 
+            Sequence('ph_id_seq'), primary_key=True)
+    value = Column(Float)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow) 
 
 Base.metadata.create_all(engine)
 
