@@ -1,5 +1,5 @@
 import datetime 
-from sqlalchemy import create_engine, Column, Integer, Float, Unicode, Sequence, DateTime
+from sqlalchemy import create_engine, Column, Integer, Float, Unicode, Sequence, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -39,6 +39,15 @@ class Ph(Base):
             Sequence('ph_id_seq'), primary_key=True)
     value = Column(Float)
     created_at = Column(DateTime, default=datetime.datetime.utcnow) 
+
+class Ilumination(Base):
+    
+    __tablename__ = 'ilumination'
+
+    id = Column(Integer,
+            Sequence('ilumination_id_seq'), primary_key=True)
+    value = Column(Boolean)
+    created_date = Column(DateTime, default=datetime.datetime.utcnow)
 
 Base.metadata.create_all(engine)
 
