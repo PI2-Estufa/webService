@@ -40,6 +40,7 @@ class Ph(Base):
     value = Column(Float)
     created_at = Column(DateTime, default=datetime.datetime.utcnow) 
 
+
 class Ilumination(Base):
     
     __tablename__ = 'ilumination'
@@ -47,6 +48,16 @@ class Ilumination(Base):
     id = Column(Integer,
             Sequence('ilumination_id_seq'), primary_key=True)
     value = Column(Boolean)
+    created_date = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class WaterLevel(Base):
+
+    __tablename__ = 'water_level'
+
+    id = Column(Integer, 
+            Sequence('water_level_id_seq'), primary_key=True)
+    value = Column(Integer)
     created_date = Column(DateTime, default=datetime.datetime.utcnow)
 
 Base.metadata.create_all(engine)
