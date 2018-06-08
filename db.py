@@ -61,6 +61,16 @@ class WaterTemperature(Base):
     created_date = Column(DateTime, default=datetime.datetime.utcnow) 
     unit = Column(Unicode(2), nullable=False)
 
+
+class WaterLevel(Base):
+
+    __tablename__ = 'water_level'
+
+    id = Column(Integer, 
+            Sequence('water_level_id_seq'), primary_key=True)
+    value = Column(Integer)
+    created_date = Column(DateTime, default=datetime.datetime.utcnow)
+
 Base.metadata.create_all(engine)
 
 
