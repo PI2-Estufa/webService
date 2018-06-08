@@ -21,10 +21,14 @@ def index():
     ilumination_query = db.session.query(db.Ilumination).order_by(db.Ilumination.id.desc()).limit(5)
     iluminations = [i.value for i in ilumination_query]
 
+    water_temperature_query = db.session.query(db.WaterTemperature).order_by(db.WaterTemperature.id.desc()).limit(5)
+    water_temperatures = [i.value for i in water_temperature_query]
+
     response = {
         "temperatures": temperatures,
         "humidities": humidities,
         "pHs": pHs,
-        "iluminations": iluminations
+        "iluminations": iluminations,
+        "water_temperatures": water_temperatures
     }
     return jsonify(response)
