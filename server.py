@@ -25,7 +25,7 @@ def index():
     water_temperatures = [i.value for i in water_temperature_query]
 
     water_level_query = db.session.query(db.WaterLevel).order_by(db.WaterLevel.id.desc()).limit(5)
-    water_level = [w.value for w in water_level_query]
+    water_levels = [w.value for w in water_level_query]
 
     response = {
         "temperatures": temperatures,
@@ -33,7 +33,7 @@ def index():
         "pHs": pHs,
         "iluminations": iluminations,
         "water_temperatures": water_temperatures,
-        "water_level": water_level
+        "water_levels": water_levels
 
     }
     return jsonify(response)
