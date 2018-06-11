@@ -71,6 +71,16 @@ class WaterLevel(Base):
     value = Column(Integer)
     created_date = Column(DateTime, default=datetime.datetime.utcnow)
 
+
+class DrawerStatus(Base):
+
+    __tablename__ = 'drawer_status'
+
+    id = Column(Integer, 
+            Sequence('drawer_status_id_seq'), primary_key=True)
+    value = Column(Boolean)
+    created_date = Column(DateTime, default=datetime.datetime.utcnow) 
+
 Base.metadata.create_all(engine)
 
 

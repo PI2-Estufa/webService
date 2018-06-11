@@ -27,13 +27,16 @@ def index():
     water_level_query = db.session.query(db.WaterLevel).order_by(db.WaterLevel.id.desc()).limit(5)
     water_levels = [w.value for w in water_level_query]
 
+    drawer_status_query = db.session.query(db.DrawerStatus).order_by(db.DrawerStatus.id.desc()).limit(5)
+    drawer_statuses = [d.value for d in drawer_status_query]
+
     response = {
         "temperatures": temperatures,
         "humidities": humidities,
         "pHs": pHs,
         "iluminations": iluminations,
         "water_temperatures": water_temperatures,
-        "water_levels": water_levels
-
+        "water_levels": water_levels,
+        "drawer_statuses": drawer_statuses
     }
     return jsonify(response)
