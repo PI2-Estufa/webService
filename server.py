@@ -1,11 +1,15 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
+import os
 import db
+from flask_cors import CORS
+from flask import Flask, jsonify, request
+from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
 CORS(app)
 
+UPLOAD_FOLDER = "./uploads"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 @app.route("/")
 def index():
@@ -40,3 +44,13 @@ def index():
         "drawer_statuses": drawer_statuses
     }
     return jsonify(response)
+
+@app.route("/picture", methods=["POST"])
+def pictures():
+    if "picture" not in request.files:
+        return "No file in request"
+
+    file = request.files["picture"]
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+    return "Ok"
