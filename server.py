@@ -1,13 +1,19 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, flash, redirect, render_template, request, session, abort
 from flask_cors import CORS
 import db
-
+from sqlalchemy.orm import sessionmaker
 
 app = Flask(__name__)
 CORS(app)
 
 
 @app.route("/")
+def home():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return "Hello Boss!  <a href='/logout'>Logout</a>"
+
 def index():
     temperature_query = db.session.query(db.Temperature).order_by(db.Temperature.id.desc()).limit(5)
     temperatures = [t.value for t in temperature_query]
@@ -40,3 +46,28 @@ def index():
         "drawer_statuses": drawer_statuses
     }
     return jsonify(response)
+
+
+@app.route('/login', methods=['POST'])
+def do_admin_login():
+ 
+    POST_USERNAME = str(request.form['username'])
+    POST_PASSWORD = str(request.form['password'])
+ 
+    
+    query = db.session.query(db.User).filter(db.User.username.in_([POST_USERNAME]), db.User.password.in_([POST_PASSWORD]) )
+    result = query.first()
+    if result:
+        session['logged_in'] = True
+    else:
+        flash('wrong password!')
+    return home()
+ 
+@app.route("/logout")
+def logout():
+    session['logged_in'] = False
+    return home()
+
+if __name__ == "__main__":
+    app.secret_key = os.urandom(12)
+    app.run(debug=True,host='0.0.0.0', port=8000)

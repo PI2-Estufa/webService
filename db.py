@@ -1,5 +1,5 @@
 import datetime 
-from sqlalchemy import create_engine, Column, Integer, Float, Unicode, Sequence, DateTime, Boolean
+from sqlalchemy import create_engine, Column, Integer, Float, String, Unicode, Sequence, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -81,4 +81,17 @@ class DrawerStatus(Base):
     value = Column(Integer)
     created_date = Column(DateTime, default=datetime.datetime.utcnow) 
 
+
+class User(Base):
+
+    __tablename__ = "user"
+ 
+    id = Column(Integer, primary_key=True)
+    username = Column(String)
+    password = Column(String)
+ 
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+ 
 Base.metadata.create_all(engine)
