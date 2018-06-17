@@ -1,9 +1,9 @@
 import os
 import db
 from flask_cors import CORS
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from werkzeug.utils import secure_filename
-
+from forms import LoginForm
 
 app = Flask(__name__)
 CORS(app)
@@ -45,6 +45,11 @@ def index():
     }
     return jsonify(response)
 
+@app.route("/login")
+def login():
+    form = LoginForm()
+    return render_template('login.html', form=form)
+
 @app.route("/picture", methods=["POST"])
 def pictures():
     if "picture" not in request.files:
@@ -54,3 +59,8 @@ def pictures():
     filename = secure_filename(file.filename)
     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
     return "Ok"
+    
+app.config.update(dict(
+    SECRET_KEY="powerful secretkey",
+    WTF_CSRF_SECRET_KEY="a csrf secret key"
+))
