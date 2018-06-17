@@ -45,9 +45,14 @@ def index():
     }
     return jsonify(response)
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        print(form.username.data)
+        print(form.password.data)
+    else:
+        print(form.erros)
     return render_template('login.html', form=form)
 
 @app.route("/picture", methods=["POST"])
@@ -59,7 +64,7 @@ def pictures():
     filename = secure_filename(file.filename)
     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
     return "Ok"
-    
+
 app.config.update(dict(
     SECRET_KEY="powerful secretkey",
     WTF_CSRF_SECRET_KEY="a csrf secret key"
