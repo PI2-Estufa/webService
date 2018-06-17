@@ -1,12 +1,15 @@
 import os
 import db
 from flask_cors import CORS
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, flash
+from flask_login import LoginManager, login_user
 from werkzeug.utils import secure_filename
 from forms import LoginForm
 
 app = Flask(__name__)
 CORS(app)
+
+lm = LoginManager(app)
 
 UPLOAD_FOLDER = "./uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -49,10 +52,14 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        print(form.username.data)
-        print(form.password.data)
+        user = db.session.query(db.User).filter_by(username=form.username.data).first()
+        if user and user.password == form.password.data:
+            login_user(user)
+            flash("Logged in.")
+        else:
+            flash("Invalid login.")
     else:
-        print(form.erros)
+        flash("Falso valitate on submit")
     return render_template('login.html', form=form)
 
 @app.route("/picture", methods=["POST"])
