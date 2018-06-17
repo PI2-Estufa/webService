@@ -2,7 +2,7 @@ import os
 import db
 from flask_cors import CORS
 from flask import Flask, jsonify, request, render_template, flash
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, logout_user
 from werkzeug.utils import secure_filename
 from forms import LoginForm
 
@@ -13,6 +13,10 @@ lm = LoginManager(app)
 
 UPLOAD_FOLDER = "./uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+@lm.user_loader
+def load_user(id):
+    return db.session.query(db.User).filter_by(id=id).first()
 
 @app.route("/")
 def index():
@@ -56,11 +60,19 @@ def login():
         if user and user.password == form.password.data:
             login_user(user)
             flash("Logged in.")
+            # return redirect(url_for(index)) MANDAR PARA PÁGINA PRINCIPAL
         else:
             flash("Invalid login.")
     else:
         flash("Falso valitate on submit")
     return render_template('login.html', form=form)
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    flash("Logged out.")
+    return "DESLOGADO"
+     # return redirect(url_for(index)) MANDAR PARA PÁGINA PRINCIPAL
 
 @app.route("/picture", methods=["POST"])
 def pictures():
