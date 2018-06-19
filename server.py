@@ -5,6 +5,9 @@ from flask import Flask, jsonify, request, render_template, flash
 from flask_login import LoginManager, login_user, logout_user
 from werkzeug.utils import secure_filename
 from forms import LoginForm
+from datetime import timedelta
+from datetime import date
+import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -87,6 +90,95 @@ def pictures():
     filename = secure_filename(file.filename)
     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
     return filename
+
+@app.route('/temperatures')
+def temperatures():
+    day = False
+    week = True
+    if(day):
+        temperatures = db.session.query(db.Temperature.id, db.Temperature.value, db.Temperature.created_date).filter(
+        (db.Temperature.created_date) >= datetime.date.today())
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in temperatures]
+        return jsonify(response)
+    elif(week):
+        passdate = datetime.date.today() - timedelta(days=7)
+        temperatures = db.session.query(db.Temperature.id, db.Temperature.value, db.Temperature.created_date).filter(
+        (db.Temperature.created_date) >= passdate)
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in temperatures]
+        return jsonify(response)
+    else:
+        passdate = datetime.date.today() - timedelta(days=30)
+        temperatures = db.session.query(db.Temperature.id, db.Temperature.value, db.Temperature.created_date).filter(
+        (db.Temperature.created_date) >= passdate)
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in temperatures]
+        return jsonify(response)
+
+
+@app.route('/humidities')
+def humidities():
+    day = False
+    week = True
+    if(day):
+        humidities = db.session.query(db.Humidity.id, db.Humidity.value, db.Humidity.created_date).filter(
+        (db.Humidity.created_date) >= datetime.date.today())
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in humidities]
+        return jsonify(response)
+    elif(week):
+        passdate = datetime.date.today() - timedelta(days=7)
+        humidities = db.session.query(db.Humidity.id, db.Humidity.value, db.Humidity.created_date).filter(
+        (db.Humidity.created_date) >= passdate)
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in humidities]
+        return jsonify(response)
+    else:
+        passdate = datetime.date.today() - timedelta(days=30)
+        humidities = db.session.query(db.Humidity.id, db.Humidity.value, db.Humidity.created_date).filter(
+        (db.Humidity.created_date) >= passdate)
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in humidities]
+        return jsonify(response)
+
+@app.route('/phs')
+def pHs():
+    day = False
+    week = True
+    if(day):
+        phs = db.session.query(db.Ph.id, db.Ph.value, db.Ph.created_at).filter(
+        (db.Ph.created_at) >= datetime.date.today())
+        response = [{"id":t.id, "value":t.value, "date": t.created_at} for t in phs]
+        return jsonify(response)
+    elif(week):
+        passdate = datetime.date.today() - timedelta(days=7)
+        phs = db.session.query(db.Ph.id, db.Ph.value, db.Ph.created_at).filter(
+        (db.Ph.created_at) >= passdate)
+        response = [{"id":t.id, "value":t.value, "date": t.created_at} for t in phs]
+        return jsonify(response)
+    else:
+        passdate = datetime.date.today() - timedelta(days=30)
+        phs = db.session.query(db.Ph.id, db.Ph.value, db.Ph.created_at).filter(
+        (db.Ph.created_at) >= passdate)
+        response = [{"id":t.id, "value":t.value, "date": t.created_at} for t in phs]
+        return jsonify(response)
+
+@app.route('/water_temperatures')
+def water_temperatures():
+    day = False
+    week = True
+    if(day):
+        water_temperatures = db.session.query(db.WaterTemperature.id, db.WaterTemperature.value, db.WaterTemperature.created_date).filter(
+        (db.WaterTemperature.created_date) >= datetime.date.today())
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in water_temperatures]
+        return jsonify(response)
+    elif(week):
+        passdate = datetime.date.today() - timedelta(days=7)
+        water_temperatures = db.session.query(db.WaterTemperature.id, db.WaterTemperature.value, db.WaterTemperature.created_date).filter(
+        (db.WaterTemperature.created_date) >= passdate)
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in water_temperatures]
+        return jsonify(response)
+    else:
+        passdate = datetime.date.today() - timedelta(days=30)
+        water_temperatures = db.session.query(db.WaterTemperature.id, db.WaterTemperature.value, db.WaterTemperature.created_date).filter(
+        (db.WaterTemperature.created_date) >= passdate)
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in water_temperatures]
+        return jsonify(response)
 
 app.config.update(dict(
     SECRET_KEY="powerful secretkey",
