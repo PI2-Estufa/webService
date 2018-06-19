@@ -42,6 +42,7 @@ def index():
     drawer_statuses = [d.value for d in drawer_status_query]
 
     images = os.listdir('./uploads')
+    images.remove(".keep")
 
     response = {
         "temperatures": temperatures,
