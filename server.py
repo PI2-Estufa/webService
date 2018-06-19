@@ -5,6 +5,9 @@ from flask import Flask, jsonify, request, render_template, flash
 from flask_login import LoginManager, login_user, logout_user
 from werkzeug.utils import secure_filename
 from forms import LoginForm
+from datetime import timedelta
+from datetime import date
+import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -83,6 +86,31 @@ def pictures():
     filename = secure_filename(file.filename)
     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
     return "Ok"
+
+@app.route('/temperatures')
+def temperatures():
+    day = True
+    week = False
+    if(day):
+        temperatures_day = db.session.query(db.Temperature.created_date).filter(
+        (db.Temperature.created_date) >= datetime.date.today())
+        temperatureses_day = [t.created_date for t in temperatures_day]
+        response = {
+            "temperatureses_day": temperatureses_day
+        }
+        #return render_template('show_temperatures.html', temperatures=temperatures_day) 
+        return jsonify(response)
+    elif(week):
+        passdate = datetime.date.today() - timedelta(days=7)
+        temperatures_week = db.session.query(db.Temperature.created_date).filter(
+        (db.Temperature.created_date) >= passdate)
+        return render_template('show_temperatures.html', temperatures=temperatures_week)
+    else:
+        passdate = datetime.date.today() - timedelta(days=30)
+        temperatures_month = db.session.query(db.Temperature.created_date).filter(
+        (db.Temperature.created_date) >= passdate)
+        return render_template('show_temperatures.html', temperatures=temperatures_month)
+
 
 app.config.update(dict(
     SECRET_KEY="powerful secretkey",
