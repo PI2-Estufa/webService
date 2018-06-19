@@ -81,7 +81,14 @@ class DrawerStatus(Base):
     value = Column(Integer)
     created_date = Column(DateTime, default=datetime.datetime.utcnow) 
 
+class Plant(Base):
 
+    __tablename__ = 'plant'
+
+    id = Column(Integer,
+        Sequence('plant_id_seq'), primary_key=True)
+    specie = Column(String)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 class User(Base):
 
