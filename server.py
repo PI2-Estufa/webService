@@ -44,6 +44,8 @@ def index():
     drawer_status_query = db.session.query(db.DrawerStatus).order_by(db.DrawerStatus.id.desc()).limit(5)
     drawer_statuses = [d.value for d in drawer_status_query]
 
+    images = os.listdir('./uploads')
+
     response = {
         "temperatures": temperatures,
         "humidities": humidities,
@@ -51,7 +53,8 @@ def index():
         "iluminations": iluminations,
         "water_temperatures": water_temperatures,
         "water_levels": water_levels,
-        "drawer_statuses": drawer_statuses
+        "drawer_statuses": drawer_statuses,
+        "images": images
     }
     return jsonify(response)
 
@@ -85,7 +88,7 @@ def pictures():
     file = request.files["picture"]
     filename = secure_filename(file.filename)
     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-    return "Ok"
+    return filename
 
 @app.route('/temperatures')
 def temperatures():
