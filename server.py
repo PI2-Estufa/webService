@@ -92,27 +92,25 @@ def pictures():
 
 @app.route('/temperatures')
 def temperatures():
-    day = True
-    week = False
+    day = False
+    week = True
     if(day):
-        temperatures_day = db.session.query(db.Temperature.created_date).filter(
+        temperatures = db.session.query(db.Temperature.id, db.Temperature.value, db.Temperature.created_date).filter(
         (db.Temperature.created_date) >= datetime.date.today())
-        temperatureses_day = [t.created_date for t in temperatures_day]
-        response = {
-            "temperatureses_day": temperatureses_day
-        }
-        #return render_template('show_temperatures.html', temperatures=temperatures_day) 
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in temperatures]
         return jsonify(response)
     elif(week):
         passdate = datetime.date.today() - timedelta(days=7)
-        temperatures_week = db.session.query(db.Temperature.created_date).filter(
+        temperatures = db.session.query(db.Temperature.id, db.Temperature.value, db.Temperature.created_date).filter(
         (db.Temperature.created_date) >= passdate)
-        return render_template('show_temperatures.html', temperatures=temperatures_week)
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in temperatures]
+        return jsonify(response)
     else:
         passdate = datetime.date.today() - timedelta(days=30)
-        temperatures_month = db.session.query(db.Temperature.created_date).filter(
+        temperatures = db.session.query(db.Temperature.id, db.Temperature.value, db.Temperature.created_date).filter(
         (db.Temperature.created_date) >= passdate)
-        return render_template('show_temperatures.html', temperatures=temperatures_month)
+        response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in temperatures]
+        return jsonify(response)
 
 
 app.config.update(dict(
