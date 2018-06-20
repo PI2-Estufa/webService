@@ -89,10 +89,12 @@ class Plant(Base):
         Sequence('plant_id_seq'), primary_key=True)
     specie = Column(String)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    observations = Column(String)
 
-    def __init__(self, specie, created_at):
+    def __init__(self, specie, created_at, observations):
         self.specie = specie
         self.created_at = created_at
+        self.observations = observations
 
 class User(Base):
 
