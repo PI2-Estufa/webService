@@ -123,9 +123,15 @@ def temperatures(report):
     }
     passdate = datetime.date.today() - timedelta(days=time_patrol[period])
     results = db.session.query(Entity.id, Entity.value, Entity.created_date).filter(
-    (Entity.created_date) >= passdate).limit(30)
+    (Entity.created_date) >= passdate).order_by(Entity.created_date.desc()).limit(30)
+    values = [r.value for r in results]
+    average = round(sum(values)/results.count(), 2)
+    
     response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in results]
-    return jsonify(response)
+    return jsonify({
+        "average": average,
+        "results": response
+    })
 
 @app.route("/index_new")
 def index_new():
