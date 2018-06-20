@@ -2,10 +2,8 @@ import os
 import db
 from flask_cors import CORS
 from flask import Flask, jsonify, request, render_template, flash, redirect, url_for
-from flask_login import LoginManager, login_user, logout_user, login_required
 from flask_jwt import JWT, jwt_required
 from werkzeug.utils import secure_filename
-from forms import LoginForm
 from datetime import timedelta
 from datetime import date
 import datetime
@@ -13,11 +11,10 @@ import datetime
 app = Flask(__name__)
 CORS(app)
 
-lm = LoginManager(app)
-
 UPLOAD_FOLDER = "./uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'ameixa'
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=3600)
 
 
 def authenticate(username, password):
@@ -30,9 +27,6 @@ def identity(payload):
 
 jwt = JWT(app, authenticate, identity)
 
-@lm.user_loader
-def load_user(id):
-    return db.session.query(db.User).filter_by(id=id).first()
 
 @app.route("/")
 @jwt_required()
