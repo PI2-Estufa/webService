@@ -90,6 +90,10 @@ class Plant(Base):
     specie = Column(String)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
+    def __init__(self, specie, created_at):
+        self.specie = specie
+        self.created_at = created_at
+
 class User(Base):
 
     __tablename__ = 'users'

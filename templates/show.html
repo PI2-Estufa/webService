@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Lista de Plantas</title>
+    </head>
+    <body>
+        <h1>Lista de Plantas</h1>
+        <hr>
+        <table border="4">
+            <tr>
+                <td>ID</td>
+                <td>Specie</td>
+                <td>Created at</td>
+            </tr>
+            {% for plant in plants %}
+            <tr>
+                <td>{{ plant.id }}</td>
+                <td>{{ plant.specie }}</td>
+                <td>{{ plant.created_at }}</td>
+                <td><a href="/delete/{{ plant.id }}">X</a></td>
+                <td><a href="/update/{{ plant.id }}">Atualizar</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <a href="/index_new">Voltar</a>
+    </body>
+</html>

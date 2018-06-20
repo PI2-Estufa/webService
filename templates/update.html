@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Atualizar</title>
+    </head>
+    <body>
+        <h1>Atualizar</h1>
+        <hr>
+        <form method="POST">
+            <table>
+                <tr>
+                    <td>Specie</td>
+                    <td><input type="text" name="specie" value="{{ plant.specie }}"></td>
+                </tr>
+                <tr>
+                    <td>Created at</td>
+                    <td><input type="text" name="created_at" value="{{ plant.created_at }}"></td>
+                </tr>
+            </table><br>
+            <input type="submit" value= "Atualizar Dados">
+        </form>
+        <br>
+        <a href="/index_new">Voltar</a>
+    </body>
+</html>

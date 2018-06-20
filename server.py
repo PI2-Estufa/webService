@@ -1,7 +1,7 @@
 import os
 import db
 from flask_cors import CORS
-from flask import Flask, jsonify, request, render_template, flash
+from flask import Flask, jsonify, request, render_template, flash, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user
 from werkzeug.utils import secure_filename
 from forms import LoginForm
@@ -127,6 +127,58 @@ def temperatures(report):
     response = [{"id":t.id, "value":t.value, "date": t.created_date} for t in results]
     return jsonify(response)
 
+@app.route("/index_new")
+def index_new():
+    return render_template("index.html")
+
+@app.route("/createpage")
+def create_page():
+    return render_template("create.html")
+
+@app.route("/create_plant", methods=['GET', 'POST'])
+def create_plant():
+    if request.method == "POST":
+        specie = request.form.get("specie")
+        created_at = request.form.get("created_at")
+
+        if specie and created_at:
+            p = db.Plant(specie, created_at)
+            db.session.add(p)
+            db.session.commit()
+    return render_template("index.html")
+
+@app.route("/show")
+def show():
+    plants = db.session.query(db.Plant).all()
+    return render_template("show.html", plants=plants)
+
+@app.route("/delete/<int:id>")
+def delete(id):
+    plant = db.session.query(db.Plant).filter_by(id = id).first()
+
+    db.session.delete(plant)
+    db.session.commit()
+
+    plants = db.session.query(db.Plant).all()
+    return render_template("show.html", plants=plants)
+
+@app.route("/update/<int:id>", methods=['GET','POST'])
+def update(id):
+    plant = db.session.query(db.Plant).filter_by(id = id).first()
+
+    if request.method == "POST":
+        specie = request.form.get("specie")
+        created_at = request.form.get("created_at")
+
+        if specie and created_at:
+            plant.specie = specie
+            plant.created_at = created_at
+
+            db.session.commit()
+
+            return redirect(url_for("show"))
+
+    return render_template("update.html", plant=plant)
 
 app.config.update(dict(
     SECRET_KEY="powerful secretkey",
