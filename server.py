@@ -146,9 +146,10 @@ def create_plant():
     if request.method == "POST":
         specie = request.form.get("specie")
         created_at = request.form.get("created_at")
+        observations = request.form.get("observations")
 
         if specie and created_at:
-            p = db.Plant(specie, created_at)
+            p = db.Plant(specie, created_at, observations)
             db.session.add(p)
             db.session.commit()
     return render_template("index.html")
@@ -175,10 +176,12 @@ def update(id):
     if request.method == "POST":
         specie = request.form.get("specie")
         created_at = request.form.get("created_at")
+        observations = request.form.get("observations")
 
         if specie and created_at:
             plant.specie = specie
             plant.created_at = created_at
+            plant.observations = observations
 
             db.session.commit()
 
