@@ -79,6 +79,7 @@ def pictures():
     return filename
 
 @app.route('/report/<report>')
+@jwt_required()
 def temperatures(report):
     entities = {
         "temperatures": db.Temperature,
