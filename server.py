@@ -1,5 +1,6 @@
 import os
 import db
+import hashlib
 from flask_cors import CORS
 from flask import Flask, jsonify, request
 from flask_jwt import JWT, jwt_required
@@ -29,7 +30,11 @@ plants_schema = PlantSchema(many=True)
 
 def authenticate(username, password):
     user = db.session.query(db.User).filter_by(username=username).first()
-    return user
+    hash = hashlib.md5(password.encode())
+    if user.password == hash.hexdigest():
+        return user
+    else:
+        return None
 
 def identity(payload):
     user = db.session.query(db.User).filter_by(id=payload["identity"]).first()
