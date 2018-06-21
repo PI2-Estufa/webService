@@ -88,7 +88,7 @@ class Plant(Base):
     id = Column(Integer,
         Sequence('plant_id_seq'), primary_key=True)
     specie = Column(String)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(String)
     observations = Column(String)
 
     def __init__(self, specie, created_at, observations):

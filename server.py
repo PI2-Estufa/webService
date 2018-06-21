@@ -1,12 +1,14 @@
 import os
 import db
 from flask_cors import CORS
-from flask import Flask, jsonify, request, render_template, flash, redirect, url_for
+from flask import Flask, jsonify, request
 from flask_jwt import JWT, jwt_required
+from flask_marshmallow import Marshmallow
 from werkzeug.utils import secure_filename
 from datetime import timedelta
 from datetime import date
 import datetime
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -15,7 +17,15 @@ UPLOAD_FOLDER = "./uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'ameixa'
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=3600)
+ma = Marshmallow(app)
 
+class PlantSchema(ma.Schema):
+    class Meta:
+        # Fields to expose
+        fields = ('specie', 'created_at', 'observations')
+
+plant_schema = PlantSchema()
+plants_schema = PlantSchema(many=True)
 
 def authenticate(username, password):
     user = db.session.query(db.User).filter_by(username=username).first()
@@ -27,6 +37,9 @@ def identity(payload):
 
 jwt = JWT(app, authenticate, identity)
 
+@app.route("/hello")
+def hello():
+    return "Hello World!"
 
 @app.route("/")
 @jwt_required()
@@ -121,63 +134,56 @@ def temperatures(report):
         "results": response
     })
 
-@app.route("/index_new")
-def index_new():
-    return render_template("index.html")
+@app.route("/plant", methods=["POST"])
+def add_plant():
+     specie = request.json['specie']
+     created_at = request.json['created_at']
+     observations = request.json['observations']
+    
+     new_plant = db.Plant(specie, created_at, observations)
+     db.session.add(new_plant)
+     db.session.commit()
+     return jsonify(specie= new_plant.specie,
+                    created_at= new_plant.created_at,
+                    observations= new_plant.observations)
 
-@app.route("/createpage")
-def create_page():
-    return render_template("create.html")
+@app.route("/plant/<id>", methods=["GET"])
+def plant_detail(id):
+    plant = db.session.query(db.Plant).get(id)
+    return jsonify(specie= plant.specie,
+                   created_at= plant.created_at,
+                   observations= plant.observations)
 
-@app.route("/create_plant", methods=['GET', 'POST'])
-def create_plant():
-    if request.method == "POST":
-        specie = request.form.get("specie")
-        created_at = request.form.get("created_at")
-        observations = request.form.get("observations")
+@app.route("/plant/<id>", methods=["PUT"])
+def plant_update(id):
+    plant = db.session.query(db.Plant).get(id)
+    specie = request.json['specie']
+    created_at = request.json['created_at']
+    observations = request.json['observations']
 
-        if specie and created_at:
-            p = db.Plant(specie, created_at, observations)
-            db.session.add(p)
-            db.session.commit()
-    return render_template("index.html")
+    plant.specie = plant
+    plant.created_at = created_at
+    plant.observations = observations
 
-@app.route("/show")
-def show():
-    plants = db.session.query(db.Plant).all()
-    return render_template("show.html", plants=plants)
+    db.session.commit()
+    return plant_schema.jsonify(plant)
 
-@app.route("/delete/<int:id>")
-def delete(id):
-    plant = db.session.query(db.Plant).filter_by(id = id).first()
-
+@app.route("/plant/<id>", methods=["DELETE"])
+def plant_delete(id):
+    plant = db.session.query(db.Plant).get(id)
     db.session.delete(plant)
     db.session.commit()
+    return plant_schema.jsonify(plant)
 
-    plants = db.session.query(db.Plant).all()
-    return render_template("show.html", plants=plants)
-
-@app.route("/update/<int:id>", methods=['GET','POST'])
-def update(id):
-    plant = db.session.query(db.Plant).filter_by(id = id).first()
-
-    if request.method == "POST":
-        specie = request.form.get("specie")
-        created_at = request.form.get("created_at")
-        observations = request.form.get("observations")
-
-        if specie and created_at:
-            plant.specie = specie
-            plant.created_at = created_at
-            plant.observations = observations
-
-            db.session.commit()
-
-            return redirect(url_for("show"))
-
-    return render_template("update.html", plant=plant)
+@app.route("/plant", methods=["GET"])
+def plant_all():
+    plant_query = db.session.query(db.Plant).order_by(db.Plant.id.desc()).limit(30)
+    response = [{"id":p.id, "specie":p.specie, "observations": p.observations} for p in plant_query]
+    return jsonify(response)
 
 app.config.update(dict(
     SECRET_KEY="powerful secretkey",
     WTF_CSRF_SECRET_KEY="a csrf secret key"
 ))
+
+
