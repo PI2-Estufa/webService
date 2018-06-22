@@ -81,7 +81,14 @@ def index():
         "water_temperatures": water_temperatures,
         "water_levels": water_levels,
         "drawer_statuses": drawer_statuses,
-        "images": images
+        "images": images,
+        "warnings": [
+            {
+                "id": 2,
+                "message": "PH elevada!",
+                "level": "error"
+            }
+        ]
     }
     return jsonify(response)
 
