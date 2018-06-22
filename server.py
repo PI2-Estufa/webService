@@ -17,7 +17,7 @@ CORS(app)
 UPLOAD_FOLDER = "./uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'ameixa'
-app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=3600)
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=36000)
 ma = Marshmallow(app)
 
 class PlantSchema(ma.Schema):
