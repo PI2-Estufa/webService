@@ -21,6 +21,16 @@ class Temperature(Base):
     unit = Column(Unicode(2), nullable=False)
 
 
+class Image(Base):
+
+    __tablename__ = 'image'
+
+    id = Column(Integer, 
+            Sequence('image_id_seq'), primary_key=True)
+    url = Column(String)
+    created_date = Column(DateTime, default=datetime.datetime.utcnow)
+
+
 class Humidity(Base):
     
     __tablename__ = 'humidity'
