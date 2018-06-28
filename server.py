@@ -68,8 +68,8 @@ def index():
     drawer_status_query = db.session.query(db.DrawerStatus).order_by(db.DrawerStatus.id.desc()).limit(5)
     drawer_statuses = [d.value for d in drawer_status_query]
 
-    images = os.listdir('./uploads')
-    images.remove('.keep')
+    images_query = db.session.query(db.Image).order_by(db.Image.id.desc()).limit(5)
+    images = [f.url for f in images_query]
 
     response = {
         'temperatures': temperatures,
