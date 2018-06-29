@@ -68,8 +68,11 @@ def index():
     drawer_status_query = db.session.query(db.DrawerStatus).order_by(db.DrawerStatus.id.desc()).limit(5)
     drawer_statuses = [d.value for d in drawer_status_query]
 
-    images_query = db.session.query(db.Image).order_by(db.Image.id.desc()).limit(5)
-    images = [f.url for f in images_query]
+    image_query = db.session.query(db.Image).order_by(db.Image.created_date.desc()).limit(1)
+    if image_query.count() > 0:
+        image = image_query[0].url
+    else:
+        image = ''
 
     response = {
         'temperatures': temperatures,
@@ -79,7 +82,7 @@ def index():
         'water_temperatures': water_temperatures,
         'water_levels': water_levels,
         'drawer_statuses': drawer_statuses,
-        'images': images,
+        'image': image,
         'warnings': [
             {
                 'id': 2,
