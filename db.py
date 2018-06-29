@@ -1,10 +1,11 @@
-import datetime 
+import datetime
+import os
 from sqlalchemy import create_engine, Column, Integer, String, Float, Unicode, Sequence, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-engine = create_engine("postgresql://greenhouse:greenhouse@postgres:5432/greenhouse", echo=True)
+engine = create_engine(os.environ.get("POSTGRES_URL"), echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 
